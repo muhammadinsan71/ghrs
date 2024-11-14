@@ -103,7 +103,7 @@ async def main():
 
     # Prompt the user to input the number of proxies they want to use
     try:
-        num_proxies_to_use = int(input('Please enter the number of proxies you want to use: ').strip())
+        num_proxies_to_use = int('100').strip()
         if num_proxies_to_use <= 0:
             raise ValueError("The number of proxies must be a positive integer.")
     except ValueError as e:
