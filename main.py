@@ -105,7 +105,7 @@ async def main():
     tasks = []
     for proxy in proxies:
         for user_id in user_ids:
-            tasks.append(loop.run_in_executor(None, connect_to_wss_http_proxy, proxy, user_id))
+            tasks.append(loop.run_in_executor(None, connect_to_wss, proxy, user_id))
 
     await asyncio.gather(*tasks)
 
