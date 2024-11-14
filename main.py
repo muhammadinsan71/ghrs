@@ -97,39 +97,18 @@ async def connect_to_wss(socks5_proxy, user_id):
 async def main():
     with open('token.txt', 'r') as file:
         user_ids = file.read().splitlines()
-    
+
     with open('proxy.txt', 'r') as file:
-        all_proxies = file.read().splitlines()
-        
-    active_proxies = random.sample(all_proxies)  # Select the proxies to use
-    tasks = {asyncio.create_task(connect_to_wss(proxy, user_ids)): proxy for proxy in active_proxies}
+        proxies = file.read().splitlines()
 
-    while True:
-        done, pending = await asyncio.wait(tasks.keys(), return_when=asyncio.FIRST_COMPLETED)
-        for task in done:
-            if task.result() is None:
-                failed_proxy = tasks[task]
-                logger.info(f"Removing and replacing failed proxy: {failed_proxy}")
-                active_proxies.remove(failed_proxy)
-                new_proxy = random.choice(all_proxies)
-                active_proxies.append(new_proxy)
-                new_task = asyncio.create_task(connect_to_wss(new_proxy, user_ids))
-                tasks[new_task] = new_proxy  # Replace the task in the dictionary
-            tasks.pop(task)  # Remove the completed task whether it succeeded or failed
+    loop = asyncio.get_running_loop()
+    tasks = []
+    for proxy in proxies:
+        for user_id in user_ids:
+            tasks.append(loop.run_in_executor(None, connect_to_wss_http_proxy, proxy, user_id))
 
-        # Replenish the tasks if any have completed
-        for proxy in set(active_proxies) - set(tasks.values()):
-            new_task = asyncio.create_task(connect_to_wss(proxy, user_ids))
-            tasks[new_task] = proxy
+    await asyncio.gather(*tasks)
 
-def remove_proxy_from_list(proxy):
-    with open("proxy.txt", "r+") as file:
-        lines = file.readlines()
-        file.seek(0)
-        for line in lines:
-            if line.strip() != proxy:
-                file.write(line)
-        file.truncate()
 
 if __name__ == '__main__':
     asyncio.run(main())
