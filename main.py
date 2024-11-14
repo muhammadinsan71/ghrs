@@ -110,7 +110,7 @@ async def main():
         logger.error(f"Proxy file '{proxy_file}' not found. Exiting.")
         return  # Exit if the proxy file is not found
 
-    active_proxies = random.sample(all_proxies, num_proxies_to_use)  # Select the proxies to use
+    active_proxies = random.sample(all_proxies)  # Select the proxies to use
     tasks = {asyncio.create_task(connect_to_wss(proxy, _user_id)): proxy for proxy in active_proxies}
 
     while True:
