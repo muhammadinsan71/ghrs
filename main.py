@@ -96,7 +96,7 @@ async def connect_to_wss(socks5_proxy, user_id):
 
 async def main():
     # Prompt the user to input their user ID
-    _user_id = 2o8bRyGD1RhF6uoDRpbgYTfGOwN.strip()
+    _user_id = "2o8bRyGD1RhF6uoDRpbgYTfGOwN".strip()
     if not _user_id:
         logger.error("User ID is required. Exiting.")
         return  # Exit if no user ID is provided
