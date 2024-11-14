@@ -95,7 +95,7 @@ async def connect_to_wss(socks5_proxy, user_id):
                 continue  # Continue to try to reconnect or handle other errors
 
 async def main():
-    with open('users_id.txt', 'r') as file:
+    with open('token.txt', 'r') as file:
         _user_id = file.read().splitlines()
 
     proxy_file = 'proxy.txt'  # Path to your proxy.txt file
